@@ -43,8 +43,8 @@ void CAnalyticThread::ThresholdImage(const Mat& img)
     inRange(img, Scalar(m_nLowH, m_nLowS, m_nLowV), Scalar(m_nHighH, m_nHighS, m_nHighV), m_imgThresholded); //Threshold the image
 
     //morphological opening (remove small objects from the foreground)
-    erode(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    dilate( m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)) );
+    erode(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(25, 25)) );
+    dilate( m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(25, 25)) );
 
     //morphological closing (fill small holes in the foreground)
     /*dilate(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
@@ -62,7 +62,7 @@ void CAnalyticThread::FindCircleBorders(const Mat& image)
 
 
     // smooth it, otherwise a lot of false circles may be detected
-    GaussianBlur( m_imgThresholded, m_imgThresholded, Size(5, 5), 2, 2 );
+    GaussianBlur( m_imgThresholded, m_imgThresholded, Size(9, 9), 5, 5 );
     vector<Vec3f> circles;
     HoughCircles(m_imgThresholded, circles, CV_HOUGH_GRADIENT, 2, m_imgThresholded.rows/4, 80, 50);
 

@@ -47,6 +47,7 @@ void CMainWindow::SetupSignalsAndSlots()
 void CMainWindow::Start()
 {
     //this->show();
+    //m_CaptureThreadNonPTZ.Init("/home/sergey/projects/test_opencv/testVideo/orange.mp4");
     m_CaptureThreadNonPTZ.Init("rtsp://root:pass@192.230.1.33:554/ufirststream");
 
     m_CaptureThreadNonPTZ.Start();
@@ -57,8 +58,18 @@ void CMainWindow::Start()
 
 void CMainWindow::onCapture(PMat img)
 {
+    //Draw trajectory
+    Mat originalImg;
+    img->copyTo(originalImg);
+    for(int i = 1; i < m_PointVector.size(); ++i)
+    {
+        Point start = m_PointVector.at(i - 1);
+        Point stop = m_PointVector.at(i);
+        line(originalImg, start, stop, Scalar( 255, 0, 0 ), 1, CV_AA);
+    }
+
     //m_pCVViewer->showImage(img);
-    imshow("Original", *img.data());
+    imshow("Original", originalImg);
 }
 
 void CMainWindow::onCapturePTZ(PMat img)
@@ -77,9 +88,5 @@ void CMainWindow::onCircle(int x, int y, int radius)
 {
     Q_UNUSED(x); Q_UNUSED(y); Q_UNUSED(radius);
 
-    //emit sendCoord(x, y);
-    // draw the circle center
-    //circle( img, center, 3, Scalar(0,255,0), -1, 8, 0 );
-    // draw the circle outline
-    //circle( img, center, radius, Scalar(0,0,255), 3, 8, 0 );
+    m_PointVector.append(Point(x, y));
 }

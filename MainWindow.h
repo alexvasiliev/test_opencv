@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QSignalMapper>
+#include <QVector>
 
 #include "ptzcontrolthread.h"
 #include "CVCaptureThread.h"
@@ -40,7 +41,7 @@ private:
     CCVCaptureThread        m_CaptureThreadPTZ;
     CAnalyticThread         m_AnalyticThread;
     CPTZControlThread       m_PTZControlThread;
-
+    QVector<Point>          m_PointVector;
 
     void        SetupSignalsAndSlots();
     void        CreateTrackBar();
