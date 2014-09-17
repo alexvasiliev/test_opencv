@@ -39,6 +39,6 @@ void CCVCaptureThread::DoWork()
         // отправляем кадр
         PMat pImg = PMat(new Mat(pFrame, true/*copy data*/)); //to avoid memory corruption
         emit resultReady(pImg);
-        msleep(25);
+        msleep(30);
     }
 }

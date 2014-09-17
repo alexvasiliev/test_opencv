@@ -4,7 +4,7 @@
 //mask for orange.mp4
 //m_nLowH = 5;
 //m_nLowS = 95;
-//m_nLowV = 10;
+//m_nLowV = 75;
 
 //m_nHighH = 80;
 //m_nHighS = 255;
@@ -14,7 +14,7 @@ CAnalyticThread::CAnalyticThread()
 {
     m_nLowH = 5;
     m_nLowS = 95;
-    m_nLowV = 10;
+    m_nLowV = 200;
 
     m_nHighH = 80;
     m_nHighS = 255;
@@ -43,12 +43,12 @@ void CAnalyticThread::ThresholdImage(const Mat& img)
     inRange(img, Scalar(m_nLowH, m_nLowS, m_nLowV), Scalar(m_nHighH, m_nHighS, m_nHighV), m_imgThresholded); //Threshold the image
 
     //morphological opening (remove small objects from the foreground)
-    erode(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(25, 25)) );
-    dilate( m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(25, 25)) );
+    erode(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(15, 15)) );
+    dilate( m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(15, 15)) );
 
     //morphological closing (fill small holes in the foreground)
-    /*dilate(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    erode(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );*/
+    dilate(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(m_imgThresholded, m_imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
 
     PMat pImg = PMat(new Mat(m_imgThresholded));
     emit sendThresholdedImg(pImg);
@@ -60,11 +60,11 @@ void CAnalyticThread::FindCircleBorders(const Mat& image)
     //Mat gray;
     //cvtColor(image, gray, CV_BGR2GRAY);
 
-
     // smooth it, otherwise a lot of false circles may be detected
-    GaussianBlur( m_imgThresholded, m_imgThresholded, Size(9, 9), 5, 5 );
+    GaussianBlur( m_imgThresholded, m_imgThresholded, Size(5, 5), 2, 2);
+
     vector<Vec3f> circles;
-    HoughCircles(m_imgThresholded, circles, CV_HOUGH_GRADIENT, 2, m_imgThresholded.rows/4, 80, 50);
+    HoughCircles(m_imgThresholded, circles, CV_HOUGH_GRADIENT, 2, m_imgThresholded.rows/4, 80, 30);
 
     for( size_t i = 0; i < circles.size(); i++ )
     {

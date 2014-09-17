@@ -47,13 +47,14 @@ void CMainWindow::SetupSignalsAndSlots()
 void CMainWindow::Start()
 {
     //this->show();
-    //m_CaptureThreadNonPTZ.Init("/home/sergey/projects/test_opencv/testVideo/orange.mp4");
-    m_CaptureThreadNonPTZ.Init("rtsp://root:pass@192.230.1.33:554/ufirststream");
+    m_AnalyticThread.Start();
 
+    //m_CaptureThreadNonPTZ.Init("/home/sergey/projects/test_opencv/testVideo/test.mkv");
+    m_CaptureThreadNonPTZ.Init("rtsp://root:pass@192.230.1.33:554/ufirststream");
     m_CaptureThreadNonPTZ.Start();
+
     m_CaptureThreadPTZ.Init("rtsp://root:pass@192.230.1.109:554/ch0_unicast_firststream");
     m_CaptureThreadPTZ.Start();
-    m_AnalyticThread.Start();
 }
 
 void CMainWindow::onCapture(PMat img)
@@ -61,12 +62,12 @@ void CMainWindow::onCapture(PMat img)
     //Draw trajectory
     Mat originalImg;
     img->copyTo(originalImg);
-    for(int i = 1; i < m_PointVector.size(); ++i)
-    {
-        Point start = m_PointVector.at(i - 1);
-        Point stop = m_PointVector.at(i);
-        line(originalImg, start, stop, Scalar( 255, 0, 0 ), 1, CV_AA);
-    }
+//    for(int i = 1; i < m_PointVector.size(); ++i)
+//    {
+//        Point start = m_PointVector.at(i - 1);
+//        Point stop = m_PointVector.at(i);
+//        line(originalImg, start, stop, Scalar( 255, 0, 0 ), 1, CV_AA);
+//    }
 
     //m_pCVViewer->showImage(img);
     imshow("Original", originalImg);
